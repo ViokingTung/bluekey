@@ -4,6 +4,12 @@
   <img src="./public/bluekey-blue.png" width="128" height="128" alt="BlueKey Logo">
 </p>
 
+<p align="center">
+  <a href="https://github.com/ViokingTung/bluekey/releases"><img src="https://img.shields.io/github/v/release/ViokingTung/bluekey?style=flat-square&color=0a84ff" alt="Latest Release"></a>
+  <a href="https://tauri.app/"><img src="https://img.shields.io/badge/Tauri-v2-FFC131?style=flat-square&logo=tauri" alt="Tauri"></a>
+  <a href="https://github.com/ViokingTung/bluekey/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ViokingTung/bluekey?style=flat-square" alt="License"></a>
+</p>
+
 [中文文档](README_zh.md) | English
 
 BlueKey automatically detects your physical distance via Bluetooth devices (RSSI) to seamlessly unlock or lock your computer. An imperceptible security guardian making your digital life more elegant.
