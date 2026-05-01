@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>BlueKey needs Bluetooth to scan for nearby devices and perform auto lock/unlock based on proximity.</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>BlueKey needs Bluetooth to scan for nearby devices and perform auto lock/unlock based on proximity.</string>
+</dict>
+</plist>

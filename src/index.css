@@ -1,0 +1,613 @@
+@import "tailwindcss";
+
+/* Font families */
+:root {
+  --font-display: "SF Pro Display", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-ui: "SF Pro Text", -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: "SF Mono", ui-monospace, monospace;
+  
+  font-family: var(--font-ui);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Color System - Light & Dark Themes with Accent Colors
+   ───────────────────────────────────────────────────────────── */
+
+/* Accent colors (can be switched via CSS variable) */
+:root {
+  --accent-blue: #0a84ff;
+  --accent-cyan: #32d4de;
+  --accent-purple: #bf5af2;
+  --accent-green: #30d158;
+  
+  /* Default accent */
+  --accent: var(--accent-blue);
+  --accent-cc: color-mix(in srgb, var(--accent) 80%, transparent);
+  --accent-40: color-mix(in srgb, var(--accent) 40%, transparent);
+  --accent-30: color-mix(in srgb, var(--accent) 30%, transparent);
+  --accent-20: color-mix(in srgb, var(--accent) 20%, transparent);
+  --accent-10: color-mix(in srgb, var(--accent) 10%, transparent);
+  --accent-05: color-mix(in srgb, var(--accent) 5%, transparent);
+}
+
+/* Dark theme (default) */
+@theme {
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-cc);
+  
+  --color-success: #30d158;
+  --color-warning: #ff9f0a;
+  --color-danger: #ff453a;
+  
+  /* Background & Surface */
+  --color-background: #0c0d12;
+  --color-surface: rgba(28, 28, 32, 0.92);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-surface-active: rgba(255, 255, 255, 0.12);
+  
+  /* Text */
+  --color-text: rgba(255, 255, 255, 0.86);
+  --color-text-soft: rgba(255, 255, 255, 0.65);
+  --color-text-muted: rgba(255, 255, 255, 0.42);
+  
+  /* Border */
+  --color-border: rgba(255, 255, 255, 0.10);
+  --color-border-soft: rgba(255, 255, 255, 0.06);
+  
+  /* Glass effect */
+  --glass-bg: linear-gradient(180deg, rgba(28, 28, 32, 0.92), rgba(20, 20, 24, 0.92));
+  --glass-border: rgba(255, 255, 255, 0.10);
+  --glass-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 24px 64px rgba(0, 0, 0, 0.4);
+}
+
+/* Light theme */
+.light {
+  --color-background: #f0eee9;
+  --color-surface: rgba(252, 252, 254, 0.92);
+  --color-surface-hover: rgba(0, 0, 0, 0.04);
+  --color-surface-active: rgba(0, 0, 0, 0.06);
+  
+  --color-text: rgba(0, 0, 0, 0.86);
+  --color-text-soft: rgba(0, 0, 0, 0.65);
+  --color-text-muted: rgba(0, 0, 0, 0.42);
+  
+  --color-border: rgba(0, 0, 0, 0.10);
+  --color-border-soft: rgba(0, 0, 0, 0.06);
+  
+  --glass-bg: linear-gradient(180deg, rgba(248, 250, 253, 0.92), rgba(240, 243, 248, 0.92));
+  --glass-border: rgba(0, 0, 0, 0.10);
+  --glass-shadow: 0 0 0 1px rgba(0, 0, 0, 0.08), 0 16px 48px rgba(0, 0, 0, 0.15);
+}
+
+/* Accent color classes */
+.accent-blue { --accent: var(--accent-blue); }
+.accent-cyan { --accent: var(--accent-cyan); }
+.accent-purple { --accent: var(--accent-purple); }
+.accent-green { --accent: var(--accent-green); }
+
+/* ─────────────────────────────────────────────────────────────
+   Animation System
+   ───────────────────────────────────────────────────────────── */
+
+/* Radar pulse animation - for device detection visualization */
+@keyframes bk-radar-pulse {
+  0% {
+    transform: scale(0.4);
+    opacity: 0.7;
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* Blink animation - for status indicators */
+@keyframes bk-blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Glow animation - for active elements */
+@keyframes bk-glow {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--accent);
+  }
+  50% {
+    box-shadow: 0 0 24px 6px var(--accent);
+  }
+}
+
+/* Fade in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Slide in animation */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Pulse ring animation */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+/* Signal bar wobble - subtle RSSI fluctuation */
+@keyframes signal-wobble {
+  0%, 100% {
+    transform: scaleY(1);
+  }
+  50% {
+    transform: scaleY(0.92);
+  }
+}
+
+/* Transition utilities */
+.transition-fade {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.transition-slide {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Glass Effect - macOS Tahoe style
+   ───────────────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+}
+
+.glass-light {
+  background: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Radar Animation Classes
+   ───────────────────────────────────────────────────────────── */
+.radar-pulse {
+  position: relative;
+}
+
+.radar-pulse::before,
+.radar-pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: bk-radar-pulse 2s ease-out infinite;
+}
+
+.radar-pulse::after {
+  animation-delay: 0.5s;
+}
+
+/* Status indicator with glow */
+.status-glow {
+  animation: bk-glow 2s ease-in-out infinite;
+}
+
+/* Blink animation for warnings */
+.blink {
+  animation: bk-blink 1.5s ease-in-out infinite;
+}
+
+/* Signal bar wobble effect */
+.signal-wobble {
+  animation: signal-wobble 0.8s ease-in-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Additional Animation Keyframes
+   ───────────────────────────────────────────────────────────── */
+
+/* Ripple animation */
+@keyframes ripple {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Shake animation */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+/* Bounce once animation */
+@keyframes bounce-once {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+/* Skeleton pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+/* Shimmer effect */
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* Confetti fall */
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+/* Draw circle */
+@keyframes draw-circle {
+  0% {
+    stroke-dasharray: 0 150;
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dasharray: 150 150;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Draw check */
+@keyframes draw-check {
+  0% {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+  }
+  100% {
+    stroke-dasharray: 50;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Glow accent */
+@keyframes glow-accent {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--accent);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px var(--accent);
+  }
+}
+
+/* Glow danger */
+@keyframes glow-danger {
+  0%, 100% {
+    box-shadow: 0 0 0 0 var(--color-danger);
+  }
+  50% {
+    box-shadow: 0 0 20px 10px var(--color-danger);
+  }
+}
+
+/* Success pulse */
+@keyframes success-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--color-success);
+  }
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 10px var(--color-success);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 var(--color-success);
+  }
+}
+
+/* Slide from bottom */
+@keyframes slide-from-bottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Zoom in */
+@keyframes zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fade out */
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+/* Animation utility classes */
+.animate-ripple {
+  animation: ripple 0.6s ease-out;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+.animate-bounce-once {
+  animation: bounce-once 0.3s ease-out;
+}
+
+.animate-skeleton-pulse {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.animate-confetti {
+  animation: confetti 2s ease-out forwards;
+}
+
+.animate-draw-circle {
+  animation: draw-circle 0.5s ease-out forwards;
+}
+
+.animate-draw-check {
+  animation: draw-check 0.3s 0.3s ease-out forwards;
+}
+
+.animate-glow-accent {
+  animation: glow-accent 2s ease-in-out infinite;
+}
+
+.animate-glow-danger {
+  animation: glow-danger 2s ease-in-out infinite;
+}
+
+.animate-success-pulse {
+  animation: success-pulse 0.5s ease-out;
+}
+
+.animate-in {
+  animation-duration: 300ms;
+  animation-timing-function: ease-out;
+  animation-fill-mode: forwards;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.slide-in-from-bottom-4 {
+  animation-name: slide-from-bottom;
+}
+
+.zoom-in-95 {
+  animation-name: zoom-in;
+}
+
+/* Slide in from right */
+@keyframes slide-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Slide in from left */
+@keyframes slide-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 0.3s ease-out;
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 0.3s ease-out;
+}
+
+/* Card hover effect */
+.card-hover {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Button press effect */
+.btn-press:active {
+  transform: scale(0.98);
+}
+
+/* Pulse animation for status indicators */
+.pulse-ring {
+  position: relative;
+}
+
+.pulse-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Scrollbar Styling
+   ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+}
+
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Form Elements
+   ───────────────────────────────────────────────────────────── */
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  border: 2px solid var(--color-background);
+  margin-top: -5px;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 6px;
+  cursor: pointer;
+  background: var(--color-surface-hover);
+  border-radius: 3px;
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Sidebar Layout
+   ───────────────────────────────────────────────────────────── */
+.sidebar {
+  width: 200px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 0.5px solid var(--color-border-soft);
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 10px;
+  margin: 1px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.sidebar-item:hover {
+  background: var(--color-surface-hover);
+}
+
+.sidebar-item.active {
+  background: var(--color-surface-active);
+  font-weight: 600;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Utility Classes
+   ───────────────────────────────────────────────────────────── */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.bg-accent {
+  background-color: var(--accent);
+}
+
+.border-accent {
+  border-color: var(--accent);
+}
