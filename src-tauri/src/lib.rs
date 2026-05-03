@@ -227,11 +227,14 @@ async fn update_settings(
         .update_settings(settings.clone())
         .await
         .map_err(|e| e.to_string())?;
+        
+    let updated_devices = storage.get_paired_devices().await;
     drop(storage);
 
-    // Update running monitor with new settings
+    // Update running monitor with new settings and updated paired devices
     let monitor = monitor.0.lock().await;
     monitor.update_settings(settings.clone()).await;
+    monitor.update_paired_devices(updated_devices).await;
     drop(monitor);
 
     // Log settings change
@@ -519,6 +522,18 @@ pub fn run() {
             // Get app data directory
             let app_data_dir = app.path().app_data_dir()
                 .expect("Failed to get app data directory");
+                
+            // Check arguments for --hidden
+            let args: Vec<String> = std::env::args().collect();
+            if args.iter().any(|arg| arg == "--hidden") {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.hide();
+                    #[cfg(target_os = "macos")]
+                    {
+                        let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+                    }
+                }
+            }
             
             // Create scanner instance
             let scanner = Arc::new(Mutex::new(BluetoothScanner::new()));
