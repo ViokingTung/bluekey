@@ -519,6 +519,18 @@ pub fn run() {
             // Get app data directory
             let app_data_dir = app.path().app_data_dir()
                 .expect("Failed to get app data directory");
+                
+            // Check arguments for --hidden
+            let args: Vec<String> = std::env::args().collect();
+            if args.iter().any(|arg| arg == "--hidden") {
+                if let Some(window) = app.get_webview_window("main") {
+                    let _ = window.hide();
+                    #[cfg(target_os = "macos")]
+                    {
+                        let _ = app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+                    }
+                }
+            }
             
             // Create scanner instance
             let scanner = Arc::new(Mutex::new(BluetoothScanner::new()));
