@@ -12,7 +12,7 @@
 
 [中文文档](README_zh.md) | English
 
-BlueKey automatically detects your physical distance via Bluetooth devices (RSSI) to seamlessly unlock or lock your computer. An imperceptible security guardian making your digital life more elegant.
+BlueKey automatically detects your physical distance via Bluetooth devices (RSSI) to seamlessly lock your computer when you leave, and wake it when you approach. An imperceptible cross-platform security guardian making your digital life more elegant.
 
 ## 📸 Screenshots
 
@@ -29,7 +29,7 @@ BlueKey automatically detects your physical distance via Bluetooth devices (RSSI
 - 📱 **Multi-Device Management** - Bind multiple devices (phones, smartwatches, iBeacons, etc.) and enable them simultaneously.
 - 📏 **Dynamic Distance Estimation** - Precisely calculates physical distance using real-time RSSI signal conversion and Kalman filtering.
 - 🎯 **One-Click Radar Calibration** - Offers graphical distance calibration to build an exclusive signal attenuation model based on the unique transmission power of each device.
-- 🔓 **Auto Unlock/Lock** - Automatically unlocks your computer when an authorized device comes into range, and locks it when all devices move away.
+- 🔓 **Auto Lock & Proximity Wake** - Automatically locks your computer when all devices move away, and wakes the screen/prepares for unlock when an authorized device comes into range (Respects OS security policies by not bypassing password screens).
 - 🎨 **Modern Interface** - Built with TailwindCSS and a Glassmorphism design philosophy featuring elegant micro-animations.
 - 🚥 **Smart System Tray Icon** - The status bar icon dynamically responds to the monitoring state (Blue when actively monitoring, Gray when idle).
 - 🔐 **Strict Security Mechanism** - Device pairing verification codes and full-lifecycle system security audit logs.
@@ -40,7 +40,7 @@ BlueKey automatically detects your physical distance via Bluetooth devices (RSSI
 
 The system uses `btleplug` in the background to capture high-frequency BLE advertisement packets from bonded devices and converts the Signal Strength (RSSI) into relative distance. To guarantee both convenience and security when you use multiple devices, BlueKey applies the following arbitration rules:
 
-* **Auto Unlock (OR Logic)**: If **ANY ONE** enabled device enters your designated "Unlock Zone" and stays for the required duration, the computer is unlocked seamlessly.
+* **Proximity Wake (OR Logic)**: If **ANY ONE** enabled device enters your designated "Unlock Zone" and stays for the required duration, the computer is woken up seamlessly, ready for you to input your password/biometrics.
 * **Auto Lock (AND Logic)**: To prevent accidental locking caused by temporary signal obstruction (e.g., covering your smartwatch), the system strictly requires that **ALL enabled devices** must fully exit the "Lock Zone" and remain out of range before issuing the lock command to the OS.
 
 ---
@@ -76,6 +76,7 @@ Due to differing Bluetooth broadcasting strategies across manufacturers, your ex
 - Node.js 18+
 - Rust 1.70+
 - Host machine must have a working Bluetooth adapter
+- **Linux Users**: Ensure `bluez` is installed and your user is part of the `bluetooth` group to allow BLE scanning without root privileges.
 
 ### Local Build & Run
 
@@ -108,11 +109,11 @@ npm run tauri build
 
 The system control module (Lock/Unlock) relies on the following native implementations across platforms:
 
-| Platform | Screen Lock Method | Auto-Start Implementation |
-|------|------|------|
-| **macOS** | `pmset displaysleepnow` / ScreenSaverEngine | LaunchAgent |
-| **Windows** | `rundll32.exe user32.dll,LockWorkStation` | Windows Registry |
-| **Linux** | `loginctl` / `gnome-screensaver` / `xflock4` | Desktop Entry |
+| Platform | Screen Lock Method | Auto-Start Implementation | Bluetooth Stack |
+|------|------|------|------|
+| **macOS** | `pmset displaysleepnow` / ScreenSaverEngine | LaunchAgent | CoreBluetooth |
+| **Windows** | `rundll32.exe user32.dll,LockWorkStation` | Windows Registry | Windows.Devices.Bluetooth |
+| **Linux** | `loginctl` / `gnome-screensaver` / `xflock4` | Desktop Entry | BlueZ |
 
 ---
 
@@ -120,5 +121,5 @@ The system control module (Lock/Unlock) relies on the following native implement
 
 This project is open-sourced under the [MIT License](./LICENSE).
 
-**Version**: v0.1.0  
+**Version**: v0.1.4  
 **Author**: Vioking

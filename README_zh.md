@@ -10,7 +10,7 @@
   <a href="https://github.com/ViokingTung/bluekey/blob/main/LICENSE"><img src="https://img.shields.io/github/license/ViokingTung/bluekey?style=flat-square" alt="License"></a>
 </p>
 
-基于蓝牙设备物理距离（RSSI），自动感应并解锁/锁定您的电脑。无感知的安全守护，让您的数字生活更优雅。
+基于蓝牙设备物理距离（RSSI），自动感应并在您离开时锁定电脑，靠近时唤醒屏幕。无感知、跨平台的安全守护，让您的数字生活更优雅。
 
 ## 📸 界面预览
 
@@ -27,7 +27,7 @@
 - 📱 **多设备平权管理** - 支持绑定多台设备（手机、手表、iBeacon等）并同时启用
 - 📏 **动态距离估算** - 借助卡尔曼滤波与实时信号折算公式，精确输出物理距离
 - 🎯 **一键雷达校准** - 提供图形化距离校准功能，针对不同设备的信号发射功率计算专属衰减模型
-- 🔓 **自动解锁/锁屏** - 授权设备靠近进入范围即自动解锁，全部设备远离即自动锁屏
+- 🔓 **自动锁屏与靠近唤醒** - 全部授权设备远离即自动锁屏，任意设备靠近进入范围即自动唤醒屏幕并准备解锁（遵循系统底层安全规范，不暴力绕过密码校验）
 - 🎨 **现代化交互** - 采用 TailwindCSS + 玻璃拟物态 (Glassmorphism) + 优雅的微动效设计
 - 🚥 **智能状态栏图标** - 状态栏图标智能跟随监控状态（监控中蓝色，未监控灰色）
 - 🔐 **严密安全机制** - 设备配对验证码及全生命周期的系统级安全审计日志
@@ -38,7 +38,7 @@
 
 系统通过 `btleplug` 在后台高频捕获绑定设备的蓝牙低功耗广播包，并从信号强度（RSSI）换算出相对距离。为了保证您在拥有多个设备时的安全与便利，系统采用了以下判定策略：
 
-* **自动解锁 (OR 逻辑)**：只要有**任意一台**启用的设备进入您的“解锁安全圈”并维持判定时间，电脑立即无感解锁。
+* **靠近唤醒 (OR 逻辑)**：只要有**任意一台**启用的设备进入您的“解锁安全圈”并维持判定时间，电脑立即无感唤醒亮屏，等待您的指纹/面容/密码输入。
 * **自动锁定 (AND 逻辑)**：为了防止手环信号短暂遮挡导致的误锁屏，系统严格判定：**必须等到所有启用的设备**全部撤出“锁定判定圈”外并维持判定时间，才会触发操作系统的锁屏指令。
 
 ---
@@ -74,6 +74,7 @@
 - Node.js 18+
 - Rust 1.70+
 - 宿主机系统必须具备蓝牙适配器
+- **Linux 用户注意**: 请确保已安装 `bluez` 并且您的系统用户被加入了 `bluetooth` 用户组，以免扫描时出现权限报错。
 
 ### 本地编译与运行
 
@@ -106,11 +107,11 @@ npm run tauri build
 
 目前系统控制模块 (Lock/Unlock) 在多平台的底层调用实现为：
 
-| 平台 | 锁屏方式 | 自启动实现 |
-|------|------|------|
-| **macOS** | `pmset displaysleepnow` / ScreenSaverEngine | LaunchAgent |
-| **Windows** | `rundll32.exe user32.dll,LockWorkStation` | 注册表 |
-| **Linux** | `loginctl` / `gnome-screensaver` / `xflock4` | Desktop Entry |
+| 平台 | 锁屏底层实现 | 自启动实现 | 蓝牙底层调用 |
+|------|------|------|------|
+| **macOS** | `pmset displaysleepnow` / ScreenSaverEngine | LaunchAgent | CoreBluetooth |
+| **Windows** | `rundll32.exe user32.dll,LockWorkStation` | 注册表 | Windows.Devices.Bluetooth |
+| **Linux** | `loginctl` / `gnome-screensaver` / `xflock4` | Desktop Entry | BlueZ |
 
 ---
 
@@ -118,5 +119,5 @@ npm run tauri build
 
 本项目基于 [MIT License](./LICENSE) 开源。
 
-**版本**: v0.1.0  
+**版本**: v0.1.4  
 **作者**: Vioking
