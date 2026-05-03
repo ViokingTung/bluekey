@@ -199,7 +199,13 @@ impl DeviceStorage {
     
     /// Add a paired device
     pub async fn add_device(&self, device: BluetoothDevice) -> Result<PairedDevice, StorageError> {
-        let paired = PairedDevice::from_bluetooth_device(&device);
+        let mut paired = PairedDevice::from_bluetooth_device(&device);
+        
+        {
+            let settings = self.settings.read().await;
+            paired.unlock_range = settings.default_unlock_range;
+            paired.lock_range = settings.default_lock_range;
+        }
         
         {
             let mut devices = self.paired_devices.write().await;
@@ -258,7 +264,15 @@ impl DeviceStorage {
     pub async fn update_settings(&self, settings: AppSettings) -> Result<(), StorageError> {
         {
             let mut current = self.settings.write().await;
-            *current = settings;
+            *current = settings.clone();
+        }
+        
+        {
+            let mut devices = self.paired_devices.write().await;
+            for device in devices.values_mut() {
+                device.unlock_range = settings.default_unlock_range;
+                device.lock_range = settings.default_lock_range;
+            }
         }
         
         self.save().await?;
